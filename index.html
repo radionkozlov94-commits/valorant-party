@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Valorant Party</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0b0e13;--panel:#121820;--line:#232d3a;--red:#ff4655;--text:#f2eee8;--dim:#8b97a4;--ok:#35d49a;--disp:"Oswald","Arial Narrow",Impact,sans-serif}
+*{box-sizing:border-box;margin:0;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font:15px/1.45 "Segoe UI",system-ui,sans-serif;max-width:560px;margin:0 auto;overflow-x:hidden;padding-bottom:calc(env(safe-area-inset-bottom,0px) + 90px)}
+svg.i{width:1em;height:1em;flex:none}
+/* header */
+.bar{position:sticky;top:0;z-index:4;display:flex;align-items:center;justify-content:space-between;padding:calc(env(safe-area-inset-top,0px) + 10px) 14px 10px;transition:background .3s,box-shadow .3s}
+.bar.sc{background:rgba(11,14,19,.88);backdrop-filter:blur(10px);box-shadow:0 1px 0 var(--line)}
+.logo{display:flex;align-items:center;gap:8px;font:700 19px var(--disp);letter-spacing:.5px}
+.logo svg{font-size:28px;color:var(--red);transition:transform .5s}
+.logo:hover svg{transform:rotate(180deg) scale(1.1)}
+.logo b{color:var(--red)}
+.me{display:flex;align-items:center;gap:8px;padding:4px 10px 4px 4px;border:1px solid var(--line);border-radius:30px;font-size:13px;background:var(--panel)}
+.me i{width:26px;height:26px;border-radius:50%;background:var(--red) center/cover;display:grid;place-items:center;font:700 13px var(--disp);font-style:normal}
+/* hero */
+.hero{position:relative;padding:34px 16px 26px;overflow:hidden;isolation:isolate}
+.shard{position:absolute;z-index:-1;background:linear-gradient(160deg,var(--red),#8f1626);opacity:.55;will-change:transform}
+.s1{right:-70px;top:-30px;width:230px;height:360px;clip-path:polygon(40% 0,100% 0,100% 100%,0 100%);animation:drift 7s ease-in-out infinite}
+.s2{right:70px;top:140px;width:90px;height:230px;opacity:.28;clip-path:polygon(50% 0,100% 0,50% 100%,0 100%);animation:drift 9s ease-in-out infinite reverse}
+.hero:before{content:"";position:absolute;inset:0;z-index:-1;background:radial-gradient(circle at 85% 20%,rgba(255,70,85,.28),transparent 55%),linear-gradient(90deg,var(--bg) 35%,transparent)}
+@keyframes drift{50%{transform:translateY(14px) rotate(2deg)}}
+.eyebrow{display:flex;align-items:center;gap:8px;color:var(--red);font:500 12px var(--disp);letter-spacing:2px}
+.eyebrow:before{content:"";width:26px;height:2px;background:var(--red)}
+h1{font:700 42px/1 var(--disp);text-transform:uppercase;margin:12px 0}
+h1 span{color:var(--red);display:block}
+.sub{color:#c3cbd3;max-width:270px;margin-bottom:20px}
+.cta{display:flex;gap:10px;flex-wrap:wrap}
+.btn{position:relative;overflow:hidden;display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:13px 18px;border-radius:4px;border:1px solid var(--red);font:700 14px var(--disp);letter-spacing:1px;text-transform:uppercase;color:#fff;background:var(--red);cursor:pointer;transition:transform .2s,box-shadow .2s}
+.btn.ghost{background:rgba(255,70,85,.06)}
+.btn:hover,.btn:active{transform:translateY(-2px);box-shadow:0 8px 24px rgba(255,70,85,.35)}
+.btn:after{content:"";position:absolute;top:0;left:-80%;width:50%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.35),transparent);transform:skewX(-20deg);transition:left .6s}
+.btn:hover:after{left:130%}
+.btn svg{transition:transform .25s}
+.btn:hover svg{transform:translateX(4px)}
+.live{display:flex;align-items:center;gap:8px;margin-top:20px;color:var(--dim);font-size:13px}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 0 rgba(53,212,154,.6);animation:pulse 1.8s infinite}
+@keyframes pulse{70%{box-shadow:0 0 0 9px rgba(53,212,154,0)}100%{box-shadow:0 0 0 0 rgba(53,212,154,0)}}
+.live b{color:var(--text)}
+/* features */
+.feats{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 14px 8px}
+.feat{display:flex;gap:11px;align-items:center;padding:12px;background:var(--panel);border:1px solid var(--line);border-radius:6px;transition:transform .25s,border-color .25s}
+.feat:hover{transform:translateY(-3px);border-color:var(--red)}
+.feat .ic{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:rgba(255,70,85,.12);color:var(--red);font-size:20px;transition:transform .5s,background .3s}
+.feat:hover .ic{transform:rotate(360deg);background:var(--red);color:#fff}
+.feat b{display:block;font-size:13px}.feat small{color:var(--dim);font-size:11px;line-height:1.2;display:block}
+/* list */
+.head{display:flex;align-items:center;gap:8px;padding:22px 14px 10px;font:700 20px var(--disp);text-transform:uppercase}
+.head svg{color:var(--red);animation:flick 1.6s ease-in-out infinite}
+@keyframes flick{50%{transform:scale(1.15) translateY(-1px)}}
+.filters{display:flex;gap:8px;overflow-x:auto;padding:0 14px 10px;scrollbar-width:none}
+.chip{flex:none;padding:7px 13px;border:1px solid var(--line);border-radius:3px;background:none;color:var(--dim);font:inherit;font-size:13px;transition:all .2s}
+.chip:hover{color:var(--text);border-color:var(--red)}
+.chip.on{background:var(--red);border-color:var(--red);color:#fff}
+#list{padding:4px 14px;display:grid;gap:10px}
+.card{display:flex;gap:12px;padding:12px;background:var(--panel);border:1px solid var(--line);border-radius:6px;position:relative;overflow:hidden;transition:transform .25s,border-color .25s,box-shadow .25s}
+.card:before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--red);transform:scaleY(0);transform-origin:top;transition:transform .3s}
+.card:hover,.card:active{transform:translateY(-3px);border-color:rgba(255,70,85,.6);box-shadow:0 10px 28px rgba(255,70,85,.15)}
+.card:hover:before{transform:scaleY(1)}
+.badge{width:46px;height:46px;flex:none;transition:transform .4s}
+.card:hover .badge{transform:scale(1.12) rotate(-6deg)}
+.cb{flex:1;min-width:0}
+.t{display:flex;justify-content:space-between;gap:8px}
+.t b{font-size:15px}.ago{color:var(--dim);font-size:12px;white-space:nowrap}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}
+.tag{display:inline-flex;align-items:center;gap:4px;font-size:11px;padding:2px 8px;background:#0b0e13;border:1px solid var(--line);border-radius:3px;color:#c3cbd3}
+.tag.mic{color:var(--ok);border-color:rgba(53,212,154,.4)}
+.note{color:#b4bdc6;font-size:13px;margin-bottom:8px;word-break:break-word}
+.foot{display:flex;align-items:center;justify-content:space-between}
+.slots{display:flex;align-items:center;gap:3px;font-size:12px;color:var(--dim)}
+.sl{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;border:1.5px dashed var(--line);margin-left:-5px;font-size:12px;transition:transform .25s}
+.slots .sl:first-child{margin-left:0}
+.sl.f{border:1.5px solid var(--red);background:#2a1519;color:var(--red)}
+.card:hover .sl.f{transform:translateY(-2px)}
+.slots span{margin-left:8px}
+.join{padding:7px 12px;font-size:12px}
+.empty{text-align:center;color:var(--dim);padding:40px 10px}
+.empty svg{font-size:34px;color:var(--red);display:block;margin:0 auto 8px}
+.slogan{text-align:center;font:700 24px var(--disp);font-style:italic;color:var(--red);opacity:.8;padding:34px 0 10px;text-transform:uppercase}
+/* reveal */
+.rv{opacity:0;transform:translateY(24px);transition:opacity .6s cubic-bezier(.2,.7,.2,1),transform .6s cubic-bezier(.2,.7,.2,1);transition-delay:calc(var(--i,0)*70ms)}
+.rv.in{opacity:1;transform:none}
+/* fab */
+.fab{position:fixed;right:14px;bottom:calc(env(safe-area-inset-bottom,0px) + 16px);z-index:4;transform:translateY(120px);transition:transform .4s cubic-bezier(.2,.7,.2,1)}
+.fab.show{transform:none}
+.fab{box-shadow:0 8px 28px rgba(255,70,85,.45)}
+/* sheet */
+.sheet{position:fixed;inset:0;background:rgba(0,0,0,.65);display:flex;align-items:flex-end;z-index:9;opacity:0;pointer-events:none;transition:opacity .25s}
+.sheet.open{opacity:1;pointer-events:auto}
+.form{background:var(--bg);width:100%;max-width:560px;margin:0 auto;max-height:92%;overflow:auto;padding:16px 14px calc(env(safe-area-inset-bottom,0px) + 16px);border-top:2px solid var(--red);transform:translateY(100%);transition:transform .35s cubic-bezier(.2,.7,.2,1)}
+.sheet.open .form{transform:none}
+.form h2{font:700 22px var(--disp);text-transform:uppercase}
+label{display:block;margin:12px 0 5px;color:var(--dim);font-size:13px}
+input,select,textarea{width:100%;padding:11px;background:var(--panel);border:1px solid var(--line);border-radius:4px;color:var(--text);font:inherit;transition:border-color .2s}
+input:focus,select:focus,textarea:focus{outline:0;border-color:var(--red)}
+textarea{min-height:70px;resize:none}
+.chk{display:flex;gap:8px;align-items:center;margin-top:14px}.chk input{width:auto}
+.btns{display:flex;gap:8px;margin-top:16px}.btns .btn{flex:1}
+.err{color:var(--red);font-size:13px;margin-top:8px;min-height:16px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.rv{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute"><defs>
+<symbol id="logo" viewBox="0 0 24 24"><path d="M2 4h6l4 8 4-8h6L12 21z" fill="currentColor"/></symbol>
+<symbol id="bolt" viewBox="0 0 24 24"><path d="M13 2 4 14h7l-1 8 9-12h-7z" fill="currentColor"/></symbol>
+<symbol id="plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" fill="none"/></symbol>
+<symbol id="arrow" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></symbol>
+<symbol id="users" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.5 3-5.5 6.5-5.5s6.5 2 6.5 5.5"/><path d="M16 4.7a3.5 3.5 0 0 1 0 6.6M18 14.8c2.2.6 3.5 2.3 3.5 5.2"/></g></symbol>
+<symbol id="target" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="2.5"/><path d="M12 1v5M12 18v5M1 12h5M18 12h5"/></g></symbol>
+<symbol id="tg" viewBox="0 0 24 24"><path d="M21 3 2.5 10.5l5 1.8L9 19l3-3.5 4.5 3.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+<symbol id="flame" viewBox="0 0 24 24"><path d="M12 2c1 4 5 6 5 11a5 5 0 0 1-10 0c0-2 1-3 2-4 0 2 1 3 2 3 0-4-1-6 1-10z" fill="currentColor"/></symbol>
+<symbol id="mic" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></g></symbol>
+<symbol id="user" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></g></symbol>
+</defs></svg>
+
+<div class="bar" id="bar">
+  <div class="logo"><svg class="i"><use href="#logo"/></svg><span>VALORANT <b>PARTY</b></span></div>
+  <div class="me"><i id="av">?</i><span id="nm">Гость</span></div>
+</div>
+
+<section class="hero">
+  <div class="shard s1" id="sh1"></div><div class="shard s2" id="sh2"></div>
+  <div class="eyebrow rv">ИГРАЙ ВМЕСТЕ, ПОБЕЖДАЙ ВМЕСТЕ</div>
+  <h1 class="rv" style="--i:1">Найди свою <span>пати</span></h1>
+  <p class="sub rv" style="--i:2">Быстро находи тиммейтов, создавай объявления и играй с крутыми людьми. Только ты, твоя команда и победы.</p>
+  <div class="cta rv" style="--i:3">
+    <button class="btn" id="goFind"><svg class="i"><use href="#bolt"/></svg>Найти пати<svg class="i"><use href="#arrow"/></svg></button>
+    <button class="btn ghost" id="add"><svg class="i"><use href="#plus"/></svg>Создать</button>
+  </div>
+  <div class="live rv" style="--i:4"><span class="dot"></span><span>Сейчас в поиске: <b id="cnt">0</b> пати</span></div>
+</section>
+
+<div class="feats">
+  <div class="feat rv" style="--i:0"><div class="ic"><svg class="i"><use href="#users"/></svg></div><div><b>Быстрый поиск</b><small>Пати за пару нажатий</small></div></div>
+  <div class="feat rv" style="--i:1"><div class="ic"><svg class="i"><use href="#target"/></svg></div><div><b>Фильтры</b><small>По рангу и режиму</small></div></div>
+  <div class="feat rv" style="--i:2"><div class="ic"><svg class="i"><use href="#tg"/></svg></div><div><b>Связь в Telegram</b><small>Сразу в личку</small></div></div>
+  <div class="feat rv" style="--i:3"><div class="ic"><svg class="i"><use href="#bolt"/></svg></div><div><b>Живая лента</b><small>Обновляется сама</small></div></div>
+</div>
+
+<div class="head rv" id="listTop"><svg class="i"><use href="#flame"/></svg>Последние пати</div>
+<div class="filters" id="fMode"></div>
+<div class="filters" id="fRank"></div>
+<div id="list"></div>
+<div class="slogan rv">Играй вместе</div>
+
+<button class="btn fab" id="fab"><svg class="i"><use href="#plus"/></svg>Создать пати</button>
+
+<div class="sheet" id="sheet"><div class="form">
+  <h2>Новое объявление</h2>
+  <label>Riot ID</label><input id="riot" maxlength="30" placeholder="Ник#1234">
+  <label>Ранг</label><select id="rank"></select>
+  <label>Режим</label><select id="mode"></select>
+  <label>Роль</label><select id="role"></select>
+  <label>Сколько игроков ищете</label><select id="need"><option>1</option><option>2</option><option>3</option><option selected>4</option></select>
+  <div class="chk"><input type="checkbox" id="mic" checked><span>Есть микрофон</span></div>
+  <label>Комментарий</label><textarea id="note" maxlength="200" placeholder="Когда играем, кого ищете, настрой"></textarea>
+  <div class="err" id="err"></div>
+  <div class="btns"><button class="btn ghost" id="cancel">Отмена</button><button class="btn" id="send">Опубликовать</button></div>
+</div></div>
+
+<script>
+const SUPABASE_URL = "https://brumhgsocnuigopnqvsm.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJydW1oZ3NvY251aWdvcG5xdnNtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIzNTQ3MDcsImV4cCI6MjEwNzkzMDcwN30.PzIXHgXKNQyVTpeELh57bv-UyUYihBBoX0e3vHAvFDQ"; // публичный anon-ключ
+
+const RANKS = ["Железо","Бронза","Серебро","Золото","Платина","Алмаз","Асцендент","Иммортал","Радиант"];
+const RC = ["#8a8f98","#b07a4a","#c3cad2","#e8c25a","#4fc3d6","#b58cff","#3fd18a","#ff4655","#ffe9a8"];
+const MODES = ["Рейтинг","Обычный","Спайк раш","Бесконечная гонка","Турнир"];
+const ROLES = ["Любая","Дуэлянт","Разведчик","Страж","Контроллер"];
+const tg = window.Telegram?.WebApp;
+try { tg?.ready(); tg?.expand(); tg?.setHeaderColor?.("#0b0e13"); tg?.setBackgroundColor?.("#0b0e13"); } catch {}
+const user = tg?.initDataUnsafe?.user || {};
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const ico = n => `<svg class="i"><use href="#${n}"/></svg>`;
+let posts = [], fMode = "Все", fRank = "Все", shown = false;
+
+if(user.first_name){ $("nm").textContent = user.first_name; $("av").textContent = user.first_name[0].toUpperCase(); }
+if(user.photo_url){ $("av").style.backgroundImage = `url(${user.photo_url})`; $("av").textContent = ""; }
+
+const H = {apikey: SUPABASE_KEY, Authorization: "Bearer " + SUPABASE_KEY, "Content-Type": "application/json"};
+async function load(){
+  const r = await fetch(SUPABASE_URL + "/rest/v1/posts?select=*&order=created_at.desc&limit=100", {headers: H});
+  if(!r.ok) throw new Error("load");
+  return r.json();
+}
+async function save(p){
+  const r = await fetch(SUPABASE_URL + "/rest/v1/posts", {method:"POST", headers:{...H, Prefer:"return=minimal"}, body: JSON.stringify(p)});
+  if(!r.ok) throw new Error("save");
+}
+function ago(iso){
+  const m = Math.max(0, Math.round((Date.now() - new Date(iso)) / 60000));
+  if(m < 1) return "только что";
+  if(m < 60) return m + " мин назад";
+  if(m < 1440) return Math.round(m / 60) + " ч назад";
+  return Math.round(m / 1440) + " дн назад";
+}
+function badge(rank){
+  const i = Math.max(0, RANKS.indexOf(rank)), c = RC[i];
+  return `<svg class="badge" viewBox="0 0 40 40"><path d="M20 3 35 11v18L20 37 5 29V11z" fill="${c}26" stroke="${c}" stroke-width="2"/><path d="M12 21l8-6 8 6" fill="none" stroke="${c}" stroke-width="2.4" stroke-linecap="round"/>${i >= 4 ? `<path d="M12 27l8-6 8 6" fill="none" stroke="${c}" stroke-width="2.4" stroke-linecap="round"/>` : ""}</svg>`;
+}
+function slots(need){
+  const have = 5 - need;
+  let s = "";
+  for(let i = 0; i < 5; i++) s += `<div class="sl ${i < have ? "f" : ""}">${i < have ? ico("user") : ""}</div>`;
+  return `<div class="slots">${s}<span>${have}/5</span></div>`;
+}
+function chips(el, items, cur, set){
+  el.innerHTML = ["Все", ...items].map(i => `<button class="chip ${i === cur ? "on" : ""}" data-v="${esc(i)}">${esc(i)}</button>`).join("");
+  el.onclick = e => { const v = e.target.dataset.v; if(v){ set(v); render(); } };
+}
+function count(el, to){
+  const from = +el.textContent || 0, t0 = performance.now();
+  (function step(t){
+    const k = Math.min(1, (t - t0) / 700);
+    el.textContent = Math.round(from + (to - from) * k);
+    if(k < 1) requestAnimationFrame(step);
+  })(t0);
+}
+const io = new IntersectionObserver(es => es.forEach(e => { if(e.isIntersecting){ e.target.classList.add("in"); io.unobserve(e.target); } }), {threshold:.12});
+function watch(){ document.querySelectorAll(".rv:not(.in)").forEach(el => io.observe(el)); }
+
+function render(){
+  chips($("fMode"), MODES, fMode, v => fMode = v);
+  chips($("fRank"), RANKS, fRank, v => fRank = v);
+  const list = posts.filter(p => (fMode === "Все" || p.mode === fMode) && (fRank === "Все" || p.rank === fRank));
+  count($("cnt"), posts.length);
+  $("list").innerHTML = list.length ? list.map((p, i) => `
+    <div class="card rv" style="--i:${Math.min(i, 5)}">
+      ${badge(p.rank)}
+      <div class="cb">
+        <div class="t"><b>${esc(p.mode)} | ${esc(p.rank)}</b><span class="ago">${ago(p.created_at)}</span></div>
+        <div class="tags"><span class="tag">${esc(p.riot_id)}</span><span class="tag">${esc(p.role)}</span>${p.mic ? `<span class="tag mic">${ico("mic")}микрофон</span>` : ""}</div>
+        ${p.note ? `<div class="note">${esc(p.note)}</div>` : ""}
+        <div class="foot">${slots(p.need || 4)}<button class="btn join" data-u="${esc(p.tg_username)}">Присоединиться</button></div>
+      </div>
+    </div>`).join("") : `<div class="empty rv">${ico("flame")}Пока нет объявлений. Создайте первое.</div>`;
+  watch();
+}
+$("list").onclick = e => {
+  const b = e.target.closest(".join"); if(!b) return;
+  const u = b.dataset.u;
+  if(!u){ tg?.showAlert("У автора скрыт username в Telegram."); return; }
+  const url = "https://t.me/" + u;
+  tg?.openTelegramLink ? tg.openTelegramLink(url) : window.open(url, "_blank");
+};
+
+const opt = a => a.map(i => `<option>${esc(i)}</option>`).join("");
+$("rank").innerHTML = opt(RANKS); $("mode").innerHTML = opt(MODES); $("role").innerHTML = opt(ROLES);
+const openForm = () => $("sheet").classList.add("open");
+$("add").onclick = openForm; $("fab").onclick = openForm;
+$("cancel").onclick = () => $("sheet").classList.remove("open");
+$("goFind").onclick = () => $("listTop").scrollIntoView({behavior:"smooth"});
+$("send").onclick = async () => {
+  const riot = $("riot").value.trim();
+  if(!/^.{2,16}#[A-Za-z0-9]{3,5}$/.test(riot)){ $("err").textContent = "Введите Riot ID в формате Ник#1234"; return; }
+  if(!user.username){ $("err").textContent = "Задайте username в настройках Telegram, чтобы с вами могли связаться."; return; }
+  $("err").textContent = ""; $("send").disabled = true;
+  try{
+    await save({tg_id: user.id, tg_username: user.username, riot_id: riot, rank: $("rank").value, mode: $("mode").value, role: $("role").value, need: +$("need").value, mic: $("mic").checked, note: $("note").value.trim()});
+    $("sheet").classList.remove("open"); $("note").value = "";
+    posts = await load(); render();
+  }catch{ $("err").textContent = "Не удалось опубликовать. Попробуйте ещё раз."; }
+  $("send").disabled = false;
+};
+
+let tick = false;
+addEventListener("scroll", () => {
+  if(tick) return; tick = true;
+  requestAnimationFrame(() => {
+    const y = scrollY;
+    $("bar").classList.toggle("sc", y > 10);
+    $("fab").classList.toggle("show", y > 320);
+    $("sh1").style.transform = `translateY(${y * .18}px)`;
+    $("sh2").style.transform = `translateY(${y * .3}px)`;
+    tick = false;
+  });
+}, {passive:true});
+
+watch();
+(async () => { try { posts = await load(); } catch { posts = []; } render(); })();
+setInterval(async () => { try { posts = await load(); render(); } catch {} }, 30000);
+</script>
+</body>
+</html>
